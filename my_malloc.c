@@ -21,7 +21,7 @@ void * head = NULL;
 
 block find_free_block_FF(block * last, size_t size){
 
-	block curr = head;
+        block curr = head;
 
 	//Now iterating throught the linked list
 	while(curr && !(curr->free && curr->size >= (size + BLOCK_SIZE))){ //skips all the blocks which don't satisfy our criteria
@@ -30,7 +30,8 @@ block find_free_block_FF(block * last, size_t size){
 		curr = curr->next;
 
 	}
-
+	
+	       
   return curr; //may return a NULL value 
 }
 
@@ -40,10 +41,13 @@ block find_best_fit_block_BF(block * last, size_t size){
 
 	//Find the optimum block first 
 	block best_block = NULL; 
-    block current = head; 
+	block current = head; 
+
 	while(current != NULL) { 
-		if (current->free && (current->size >= size + BLOCK_SIZE) && (best_block == NULL || current->size < best_block->size)) {
+	  if ((current->free && (current->size >= size + BLOCK_SIZE)) && (best_block == NULL || current->size < BLOCK_SIZE + best_block->size)) {
 			 best_block = current; //assign the best block
+			 if(best_block->size == size + BLOCK_SIZE)
+			   break;
  		}
 		
 		current = current->next; 
@@ -144,7 +148,11 @@ void coalesce(block my_block){
 	// }
 
 
-	if(my_block->next){
+     
+
+   
+
+  if(my_block->next){
 		if(my_block->next == (block)0x1){
 			return;
 		}
@@ -152,14 +160,18 @@ void coalesce(block my_block){
 			my_block->size += BLOCK_SIZE + my_block->next->size;
 			my_block->next = my_block->next->next;
 
-		}
-	}
+			if(my_block->next){	
+				my_block->next->prev = my_block;
+			}	
 
-	if(my_block->prev){
+		}
+  }
+
+  if(my_block->prev){
 		block temp;
         if(my_block->prev->free){
 			temp = my_block->prev;
-			temp->size += BLOCK_SIZE + my_block->size;
+			temp->size = temp->size + BLOCK_SIZE + my_block->size;
 			temp->next = my_block->next;
 			if(temp->next){
 				temp->next->prev = temp;
@@ -282,9 +294,10 @@ void ff_free(void * ptr){
 	}
 
 	block block_ptr = get_ptr(ptr);
+	if(block_ptr){
 	block_ptr->free = 1;
 	coalesce(block_ptr);
-
+	}
 }
 
 
@@ -297,8 +310,12 @@ void bf_free(void * ptr){
 	}
 
 	block block_ptr = get_ptr(ptr);
+	if(block_ptr){
 	block_ptr->free = 1;
 	coalesce(block_ptr);
+	}
+	else 
+		return;
 
 
 }
