@@ -318,23 +318,25 @@ void bf_free(void * ptr){
 
 }
 
+//Function to get the total data segment size
 
 unsigned long get_data_segment_size(){
 
-unsigned long value = (unsigned long)(sbrk(0) - head);
+unsigned long value = (unsigned long)(sbrk(0) - head); //sbrk(0) gives the current top of the heap
 return value;
 
 }
 
 
+//Function to get the total free segment size
 unsigned long get_data_segment_free_space_size(){
     
     block my_block = head;
-	unsigned long size = 0;
+	unsigned long size = 0; 
 	
-	while( my_block != NULL){
+	while( my_block != NULL){  //We iterate through the entire data segment and add the blocks which are marked free
          if(my_block->free){
-			size += my_block->size;
+			size += my_block->size; //Keep on adding the free spaces
         }
         
         my_block = my_block->next;
