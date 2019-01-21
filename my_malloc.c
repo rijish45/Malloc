@@ -115,45 +115,23 @@ void split_block(block mblock, size_t size){
 
 //Combine free blocks of adjacent memory into a single memory chunk
 
- void coalesce(block free_block){
+void coalesce(){
 
-    // block curr, prev;
-    // curr = head; 
-    // //Iterate over the linked list using standard technique
-	// while(curr && curr->next){
-	// 	if(curr->free && (curr->next->free)){
-	// 		curr->size = BLOCK_SIZE + curr->size + curr->next->size; //Combining the sizes into a single block
-	// 		curr->next = curr->next->next;
-	// 	}
-
-	// 	curr->free = 1;
-	// 	prev = curr;
-	// 	curr = curr->next;
-
-	// }
-
-	if(free_block && free_block->next){
-
-		if(free_block->next == (block)0x1){
-			return;
+    block curr, prev;
+    curr = head; 
+    //Iterate over the linked list using standard technique
+	while(curr && curr->next){
+		if(curr->free && (curr->next->free)){
+			curr->size = BLOCK_SIZE + curr->size + curr->next->size; //Combining the sizes into a single block
+			curr->next = curr->next->next;
 		}
-	
-		if(free_block->next->free){
 
-			free_block->size +=  BLOCK_SIZE + free_block->next->size;
-			free_block->next = free_block->next->next;
-		}	
-		
+		curr->free = 1;
+		prev = curr;
+		curr = curr->next;
+
 	}
 }
-
-		
-
-
-
-
-
-
 
 
 //Implement first-fit malloc now that we have our necessary helper functions
@@ -268,7 +246,7 @@ void ff_free(void * ptr){
 
 	block block_ptr = get_ptr(ptr);
 	block_ptr->free = 1;
-	coalesce(block_ptr);
+	coalesce();
 
 }
 
@@ -283,7 +261,7 @@ void bf_free(void * ptr){
 
 	block block_ptr = get_ptr(ptr);
 	block_ptr->free = 1;
-	//coalesce();
+	coalesce();
 
 
 }
