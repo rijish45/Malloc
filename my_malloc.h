@@ -13,11 +13,9 @@
      void ff_free(void *ptr);
 
 
-//sbrk(0) returns a pointer to the current top of the heap
-
-
-unsigned long get_data_segment_size(); //in bytes
-unsigned long get_data_segment_free_space_size(); //in bytes
+//Functions to calculate fragmentation
+unsigned long get_data_segment_size(); //total data segment in bytes
+unsigned long get_data_segment_free_space_size(); //free data segment in bytes
 
 
 struct block_meta_data {

@@ -31,8 +31,7 @@ block find_free_block_FF(block * last, size_t size){
 
 	}
 	
-	       
-  return curr; //may return a NULL value 
+	      return curr; //may return a NULL value 
 }
 
 //Implementation of the best fit algorithm
@@ -46,11 +45,11 @@ block find_best_fit_block_BF(block * last, size_t size){
 	while(current != NULL) { 
 	  if ((current->free && (current->size >= size + BLOCK_SIZE)) && (best_block == NULL || current->size < BLOCK_SIZE + best_block->size)) {
 			 best_block = current; //assign the best block
-			 if(best_block->size == size + BLOCK_SIZE)
+			 if(best_block->size == size + BLOCK_SIZE) //break for optimization
 			   break;
  		}
 		
-		current = current->next; 
+		current = current->next; //normal iteration
 	} 
 
  
@@ -93,7 +92,7 @@ block new_space(block last, size_t size){
     new_block->size = size;
     new_block->free = 0;
     new_block->next = NULL; //End of the list
-    new_block->prev = last;
+    new_block->prev = last; //assigning the previous ptr for the new block requested
 
     return new_block;
 
@@ -129,6 +128,8 @@ void split_block(block mblock, size_t size){
 
 
 //Combine free blocks of adjacent memory into a single memory chunk
+//Initially tried deffered coalescing, but it took a long time
+//After that switched to immediate coalescing
 
 void coalesce(block my_block){
 
@@ -148,11 +149,7 @@ void coalesce(block my_block){
 	// }
 
 
-     
-
-   
-
-  if(my_block->next){
+ if(my_block->next){
 		if(my_block->next == (block)0x1){
 			return;
 		}
@@ -217,7 +214,7 @@ void *ff_malloc(size_t size){
 
 			else{ //The case where no free block was found
 
-				my_block = new_space(last_block, size);
+				my_block = new_space(last_block, size); //request new space
 				if(!my_block)
 					return NULL;
 			}
@@ -231,7 +228,7 @@ void *ff_malloc(size_t size){
 
 
 
-
+//bf_malloc is almost the same as ff_malloc but it used different function to choose the block
 
 void *bf_malloc(size_t size){
 
@@ -254,7 +251,7 @@ void *bf_malloc(size_t size){
 	else{ //head is not NULL, malloc has been used atleast once
 
 			last_block = head;
-        	my_block = find_best_fit_block_BF(&last_block, size); //Search for the free block of memory 
+        	my_block = find_best_fit_block_BF(&last_block, size); //Search for the free block of memory
 
 
 			if(my_block != NULL){
@@ -278,13 +275,12 @@ void *bf_malloc(size_t size){
 }
 
 
-
 //We need to get address of the struct i.e. where meta data is stored
 block get_ptr(void * ptr){
 return((block)ptr -1);
 }
 
-//Implementation of free
+//Implementation of ff_free
 
 void ff_free(void * ptr){
 
@@ -298,10 +294,12 @@ void ff_free(void * ptr){
 	block_ptr->free = 1;
 	coalesce(block_ptr);
 	}
+	else
+		return;
 }
 
 
-
+//Implementation of bf_free is same as ff_free
 void bf_free(void * ptr){
 
 	if (!ptr){
