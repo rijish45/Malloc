@@ -24,7 +24,7 @@ struct block_meta_data {
 
 	size_t size; //size of the block
 	struct block_meta_data * next; //next meta-data block
-  //struct block_meta_data * prev; //previous meta-data block
+    struct block_meta_data * prev; //previous meta-data block
 	int free; //this is a flag variable descibing whether the block is free or not denoted by 0 and 1
 
 };
