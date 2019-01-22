@@ -5,12 +5,6 @@
 #include "my_malloc.h"
 
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <stddef.h>
-#include "my_malloc.h"
-
 
 //head of our linked list
 
