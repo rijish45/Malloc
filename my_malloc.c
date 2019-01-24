@@ -6,7 +6,6 @@
 
 
 
-
 //head of our linked list
 
 void * head = NULL;
