@@ -5,11 +5,6 @@
 #include "my_malloc.h"
 
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <stddef.h>
-#include "my_malloc.h"
 
 
 //head of our linked list
@@ -35,7 +30,6 @@ block find_free_block_FF(block * last, size_t size){
 }
 
 //Implementation of the best fit algorithm
-
 block find_best_fit_block_BF(block * last, size_t size){
 
 	//Find the optimum block first 
@@ -57,7 +51,7 @@ block find_best_fit_block_BF(block * last, size_t size){
 //Now assign the last block for requesting space in later situation
 
 current = head;
-//This loop is to assign the last node
+//This loop is to assign the last node for requesting space
 while(current != NULL){
 		
 		if(((best_block - current) == 0))
@@ -100,8 +94,8 @@ block new_space(block last, size_t size){
 
 
 
-//If we find a free block which exactly fits the required size, we don't need to do splitting. Otherwise, if the block size is greater than the size of the 
-//requested slot, it's better to split the block into two partitions
+/*If we find a free block which exactly fits the required size, we don't need to do splitting. Otherwise, if the block size is greater than the size of the 
+requested slot, it's better to split the block into two partitions */
 
 void split_block(block mblock, size_t size){
     
@@ -111,7 +105,7 @@ void split_block(block mblock, size_t size){
 	new_block->size = (mblock->size - size - BLOCK_SIZE);
 	new_block->next = mblock->next;
 	new_block->free = 1; //The new block is free 
-    new_block->prev = mblock;
+	new_block->prev = mblock;
 
 	mblock->size = size; //The size of the input block gets reduced
 	mblock->free = 0; //allocated
@@ -148,12 +142,13 @@ void coalesce(block my_block){
 
 	// }
 
+  //The following two cases would be able to handle all merge conditions
 
  if(my_block->next){
 		if(my_block->next == (block)0x1){
 			return;
 		}
-		if(my_block->next->free){
+		if(my_block->next->free){ //if the next block is free, merge the current block with the next block
 			my_block->size += BLOCK_SIZE + my_block->next->size;
 			my_block->next = my_block->next->next;
 
@@ -166,7 +161,7 @@ void coalesce(block my_block){
 
   if(my_block->prev){
 		block temp;
-        if(my_block->prev->free){
+		if(my_block->prev->free){ //if the previous blocks is free, merge with the previous block
 			temp = my_block->prev;
 			temp->size = temp->size + BLOCK_SIZE + my_block->size;
 			temp->next = my_block->next;
@@ -184,7 +179,7 @@ void coalesce(block my_block){
 
 void *ff_malloc(size_t size){
 
-	if( size <= 0){
+	if( size <= 0){ //size has to be positive
 		return NULL;
 	}
 
@@ -277,7 +272,7 @@ void *bf_malloc(size_t size){
 
 //We need to get address of the struct i.e. where meta data is stored
 block get_ptr(void * ptr){
-return((block)ptr -1);
+  return((block)ptr -1);
 }
 
 //Implementation of ff_free
@@ -291,10 +286,10 @@ void ff_free(void * ptr){
 
 	block block_ptr = get_ptr(ptr);
 	if(block_ptr){
-	block_ptr->free = 1;
-	coalesce(block_ptr);
+	  block_ptr->free = 1; //free the block
+	  coalesce(block_ptr); //merge the blocks
 	}
-	else
+	else //when the ptr is NULL
 		return;
 }
 
@@ -308,11 +303,11 @@ void bf_free(void * ptr){
 	}
 
 	block block_ptr = get_ptr(ptr);
-	if(block_ptr){
-	block_ptr->free = 1;
-	coalesce(block_ptr);
+	if(block_ptr){ //if not NULL
+	  block_ptr->free = 1; //free the block
+	  coalesce(block_ptr); //Do the merging of the blocks
 	}
-	else 
+	else //ptr is a NULL
 		return;
 
 
@@ -336,7 +331,7 @@ unsigned long get_data_segment_free_space_size(){
 	
 	while( my_block != NULL){  //We iterate through the entire data segment and add the blocks which are marked free
          if(my_block->free){
-			size += my_block->size; //Keep on adding the free spaces
+			size = size + my_block->size; //Keep on adding the free spaces
         }
         
         my_block = my_block->next;
