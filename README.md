@@ -72,7 +72,7 @@ utilized for growing the heap.
 
 Implementation
 ------------------
-```
+```C
 block find_best_fit_block_BF(block * last, size_t size){
 
 block best_block = NULL;
