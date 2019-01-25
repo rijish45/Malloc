@@ -1,7 +1,16 @@
+/*
+
+	Rijish Ganguly
+	ECE 650- System Programming
+	rg239
+
+*/
+
+#include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-#include <stddef.h>
+//#include <math.h>
 #include "my_malloc.h"
 
 
