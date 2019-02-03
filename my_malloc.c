@@ -1,22 +1,12 @@
-/*
-
-	Rijish Ganguly
-	ECE 650- System Programming
-	rg239
-
-*/
-
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
-//#include <math.h>
 #include "my_malloc.h"
 
 
 
 //head of our linked list
-
 void * head = NULL;
 
 
@@ -57,7 +47,6 @@ block find_best_fit_block_BF(block * last, size_t size){
  
 
 //Now assign the last block for requesting space in later situation
-
 current = head;
 //This loop is to assign the last node for requesting space
 while(current != NULL){
@@ -75,8 +64,6 @@ return current; //may return NULL
 /* If we don't find a free block, then we need to request it from OS using sbrk
 sbrk(0) returns a pointer to the current top of the heap
 sbrk(num) increments process data segment by num and returns a pointer to the previous top of the heap before change */
-
-
 block new_space(block last, size_t size){
 
 	block new_block;
@@ -132,27 +119,9 @@ void split_block(block mblock, size_t size){
 //Combine free blocks of adjacent memory into a single memory chunk
 //Initially tried deffered coalescing, but it took a long time
 //After that switched to immediate coalescing
-
 void coalesce(block my_block){
-
- //    block curr, prev;
- //    curr = head; 
- //    //Iterate over the linked list using standard technique
-	// while(curr && curr->next){
-	// 	if(curr->free && (curr->next->free)){
-	// 		curr->size = BLOCK_SIZE + curr->size + curr->next->size; //Combining the sizes into a single block
-	// 		curr->next = curr->next->next;
-	// 		//curr->free = 1;
-	// 	}
-
-	// 	prev = curr;
-	// 	curr = curr->next;
-
-	// }
-
-  //The following two cases would be able to handle all merge conditions
-
- if(my_block->next){
+//The following two cases would be able to handle all merge conditions
+if(my_block->next){
 		if(my_block->next == (block)0x1){
 			return;
 		}

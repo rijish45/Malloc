@@ -29,5 +29,15 @@ struct block_meta_data {
 
 typedef struct block_meta_data * block;
 
+//Other necessary functions to implement malloc and free
+block new_space(block last, size_t size);
+void split_block(block mblock, size_t size);
+void coalesce(block my_block);
+
+//Finding blocks using the best-fit and first-fit memory allocation policies
+block find_free_block_FF(block * last, size_t size);
+block find_best_fit_block_BF(block * last, size_t size);
+
+
 
 #endif
